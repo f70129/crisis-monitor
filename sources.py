@@ -153,42 +153,69 @@ def _net_of(row):
     return float(row.get("buy", 0) or 0) - float(row.get("sell", 0) or 0)
 
 
+def _describe(data):
+    """把實際欄位與字串值摘要出來，讓錯誤訊息足以定位問題。"""
+    keys = sorted(data[0]) if data else []
+    strings = {}
+    for row in data[:200]:
+        for k, v in row.items():
+            if isinstance(v, str) and k != "date":
+                strings.setdefault(k, set()).add(v)
+    sample = {k: sorted(v)[:4] for k, v in strings.items()}
+    return f"欄位={keys}　字串值={sample}"
+
+
 def foreign_net5():
-    """外資近 5 個交易日累計買賣超（億元）。"""
+    """外資近 5 個交易日累計買賣超（億元）。
+
+    只取 Foreign_Investor（外資及陸資），不含 Foreign_Dealer_Self，
+    與看盤軟體的「外資買賣超」定義一致。
+    """
     data = fetch_finmind("TaiwanStockTotalInstitutionalInvestors", days=30)
     if not data:
         return None, None, "三大法人無資料"
     by_date = {}
     for row in data:
-        if str(row.get("name", "")).startswith("Foreign"):
+        if row.get("name") == "Foreign_Investor":
             by_date[row["date"]] = by_date.get(row["date"], 0) + _net_of(row)
     if not by_date:
-        return None, None, f"找不到外資欄位（實際欄位：{sorted(data[0])[:6]}）"
+        return None, None, f"找不到 Foreign_Investor（{_describe(data)}）"
     dates = sorted(by_date)[-5:]
-    total = sum(by_date[d] for d in dates) / 1e8
-    # 連續 5 個交易日買賣超恰好為 0 幾乎不可能，代表金額欄位沒抓到
     if all(by_date[d] == 0 for d in dates):
-        return None, None, f"買賣超金額全為 0，欄位不符（實際欄位：{sorted(data[0])[:6]}）"
-    return round(total, 1), dates[-1], None
+        return None, None, f"買賣超金額全為 0，欄位不符（{_describe(data)}）"
+    return round(sum(by_date[d] for d in dates) / 1e8, 1), dates[-1], None
 
 
 def txf_foreign_oi():
-    """台指期(TX)外資淨未平倉口數。"""
+    """台指期(TX)外資淨未平倉口數。
+
+    法人欄位是 institutional_investors（複數）；若欄位名稱再變動，
+    退回掃描所有字串欄位找含「外資」的值。
+    """
     data = fetch_finmind("TaiwanFuturesInstitutionalInvestors", data_id="TX", days=30)
     if not data:
         return None, None, "台指期法人無資料"
-    # 這個欄位在不同時期是「外資」或「外資及陸資」，用包含比對
-    rows = [r for r in data if "外資" in str(r.get("institutional_investor", ""))]
+    rows = [r for r in data if "外資" in str(r.get("institutional_investors", ""))]
     if not rows:
-        seen = sorted({str(r.get("institutional_investor", "")) for r in data})
-        return None, None, f"找不到外資未平倉（實際法人名：{seen[:4]}）"
+        rows = [r for r in data
+                if any(isinstance(v, str) and "外資" in v for v in r.values())]
+    if not rows:
+        return None, None, f"找不到外資未平倉（{_describe(data)}）"
     latest = max(r["date"] for r in rows)
     net = 0
     for r in rows:
         if r["date"] == latest:
             net += int(r.get("long_open_interest_balance_volume", 0) or 0)
             net -= int(r.get("short_open_interest_balance_volume", 0) or 0)
+    if net == 0:
+        return None, None, f"外資未平倉口數為 0，欄位不符（{_describe(rows)}）"
     return net, latest, None
+
+
+# 融資餘額的 name 值，依偏好順序。MarginPurchase 是張數、
+# MarginPurchaseMoney 是金額，兩者同向變動、變化率一致。
+# 絕不可用 ShortSale——那是融券，與融資經常反向。
+MARGIN_NAMES = ("MarginPurchase", "MarginPurchaseMoney")
 
 
 def margin_chg20():
@@ -196,21 +223,29 @@ def margin_chg20():
     data = fetch_finmind("TaiwanStockTotalMarginPurchaseShortSale", days=60)
     if not data:
         return None, None, "融資融券無資料"
-    # 同一日期可能有多筆，取每日最後一筆，避免不同量級的欄位混進同一序列
+
+    available = {str(r.get("name", "")) for r in data}
+    picked = next((n for n in MARGIN_NAMES if n in available), None)
+    if picked is None:
+        return None, None, f"找不到融資餘額項目（{_describe(data)}）"
+
     by_date = {}
     for row in data:
+        if row.get("name") != picked:
+            continue
         val = float(row.get("TodayBalance", 0) or 0)
         if val > 0:
             by_date[row["date"]] = val
+
     series = sorted(by_date.items())
     if len(series) < 21:
-        return None, None, f"融資餘額資料不足 21 筆（實得 {len(series)} 筆）"
+        return None, None, f"{picked} 資料不足 21 筆（實得 {len(series)} 筆）"
+
     base, latest = series[-21][1], series[-1][1]
     val = round((latest / base - 1) * 100, 2)
-    # 融資餘額 20 日變化超過 ±40% 不是真實情況，代表欄位或單位有問題
     if abs(val) > 40:
-        return None, None, (f"融資餘額變化 {val}% 超出合理範圍，"
-                            f"欄位可能不符（基期 {base:g} → 最新 {latest:g}）")
+        return None, None, (f"融資餘額變化 {val}% 超出合理範圍"
+                            f"（{picked}：基期 {base:g} → 最新 {latest:g}）")
     return val, series[-1][0], None
 
 
