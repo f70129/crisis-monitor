@@ -8,6 +8,7 @@
 import csv
 import io
 import os
+import re
 from datetime import datetime, timedelta
 
 import requests
@@ -131,16 +132,25 @@ def fetch_finmind(dataset, data_id="", days=60):
         raise ValueError("缺少 FINMIND_TOKEN")
     end = datetime.now().strftime("%Y-%m-%d")
     start = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
-    params = {"dataset": dataset, "token": FINMIND_TOKEN,
-              "start_date": start, "end_date": end}
+    # token 走 Authorization 標頭，不放在 URL，避免例外訊息帶出憑證
+    params = {"dataset": dataset, "start_date": start, "end_date": end}
     if data_id:
         params["data_id"] = data_id
-    resp = requests.get(FINMIND_URL, params=params, timeout=TIMEOUT)
+    headers = {"Authorization": f"Bearer {FINMIND_TOKEN}"}
+    resp = requests.get(FINMIND_URL, params=params, headers=headers, timeout=TIMEOUT)
     resp.raise_for_status()
     result = resp.json()
     if result.get("status") != 200:
         raise ValueError(f"FinMind 錯誤：{result.get('msg')}")
     return result.get("data", [])
+
+
+def _net_of(row):
+    """買賣超金額。優先用 difference，缺欄位時退回 buy − sell。"""
+    diff = row.get("difference")
+    if diff not in (None, ""):
+        return float(diff)
+    return float(row.get("buy", 0) or 0) - float(row.get("sell", 0) or 0)
 
 
 def foreign_net5():
@@ -151,12 +161,14 @@ def foreign_net5():
     by_date = {}
     for row in data:
         if str(row.get("name", "")).startswith("Foreign"):
-            by_date.setdefault(row["date"], 0)
-            by_date[row["date"]] += float(row.get("difference", 0) or 0)
+            by_date[row["date"]] = by_date.get(row["date"], 0) + _net_of(row)
     if not by_date:
-        return None, None, "找不到外資欄位"
+        return None, None, f"找不到外資欄位（實際欄位：{sorted(data[0])[:6]}）"
     dates = sorted(by_date)[-5:]
     total = sum(by_date[d] for d in dates) / 1e8
+    # 連續 5 個交易日買賣超恰好為 0 幾乎不可能，代表金額欄位沒抓到
+    if all(by_date[d] == 0 for d in dates):
+        return None, None, f"買賣超金額全為 0，欄位不符（實際欄位：{sorted(data[0])[:6]}）"
     return round(total, 1), dates[-1], None
 
 
@@ -165,9 +177,11 @@ def txf_foreign_oi():
     data = fetch_finmind("TaiwanFuturesInstitutionalInvestors", data_id="TX", days=30)
     if not data:
         return None, None, "台指期法人無資料"
-    rows = [r for r in data if r.get("institutional_investor") == "外資"]
+    # 這個欄位在不同時期是「外資」或「外資及陸資」，用包含比對
+    rows = [r for r in data if "外資" in str(r.get("institutional_investor", ""))]
     if not rows:
-        return None, None, "找不到外資未平倉"
+        seen = sorted({str(r.get("institutional_investor", "")) for r in data})
+        return None, None, f"找不到外資未平倉（實際法人名：{seen[:4]}）"
     latest = max(r["date"] for r in rows)
     net = 0
     for r in rows:
@@ -182,13 +196,21 @@ def margin_chg20():
     data = fetch_finmind("TaiwanStockTotalMarginPurchaseShortSale", days=60)
     if not data:
         return None, None, "融資融券無資料"
-    series = sorted(((r["date"], float(r.get("TodayBalance", 0) or 0)) for r in data),
-                    key=lambda x: x[0])
-    series = [(d, v) for d, v in series if v > 0]
+    # 同一日期可能有多筆，取每日最後一筆，避免不同量級的欄位混進同一序列
+    by_date = {}
+    for row in data:
+        val = float(row.get("TodayBalance", 0) or 0)
+        if val > 0:
+            by_date[row["date"]] = val
+    series = sorted(by_date.items())
     if len(series) < 21:
-        return None, None, "融資餘額資料不足 21 筆"
-    base = series[-21][1]
-    val = round((series[-1][1] / base - 1) * 100, 2)
+        return None, None, f"融資餘額資料不足 21 筆（實得 {len(series)} 筆）"
+    base, latest = series[-21][1], series[-1][1]
+    val = round((latest / base - 1) * 100, 2)
+    # 融資餘額 20 日變化超過 ±40% 不是真實情況，代表欄位或單位有問題
+    if abs(val) > 40:
+        return None, None, (f"融資餘額變化 {val}% 超出合理範圍，"
+                            f"欄位可能不符（基期 {base:g} → 最新 {latest:g}）")
     return val, series[-1][0], None
 
 
@@ -200,6 +222,24 @@ def fred_delta(series_id, lookback):
     return round(rows[-1][1] - rows[-1 - lookback][1], 3), rows[-1][0], None
 
 
+def safe_error(exc):
+    """把例外轉成可以公開的訊息。
+
+    report.md 與 history.json 會 commit 進公開 repo，而 GitHub 的自動遮蔽只作用在
+    Actions log、不作用在檔案內容。所以這裡把憑證與整段 URL 都拿掉再往外傳。
+    """
+    msg = f"{type(exc).__name__}: {exc}"
+    for secret in (FINMIND_TOKEN,
+                   os.environ.get("TELEGRAM_BOT_TOKEN", ""),
+                   os.environ.get("TELEGRAM_CHAT_ID", "")):
+        if secret and len(secret) >= 6:
+            msg = msg.replace(secret, "***")
+    msg = re.sub(r"https?://\S+", "<url>", msg)
+    msg = re.sub(r"(?i)(token|authorization|bearer|api[_-]?key)[=:\s]+\S+",
+                 r"\1=***", msg)
+    return msg[:200]
+
+
 # ---------------------------------------------------------------- 分派
 def fetch_delta(source, lookback):
     """取變化幅度。目前只有 FRED 單一序列支援，其餘回傳 none。"""
@@ -209,7 +249,7 @@ def fetch_delta(source, lookback):
             return fred_delta(arg, lookback)
         return None, None, f"{source} 不支援變化率"
     except Exception as exc:  # noqa: BLE001
-        return None, None, f"{type(exc).__name__}: {exc}"
+        return None, None, safe_error(exc)
 
 
 def fetch(source):
@@ -238,4 +278,4 @@ def fetch(source):
                     "margin_chg20": margin_chg20}[arg]()
         return None, None, f"未知來源 {source}"
     except Exception as exc:  # noqa: BLE001 — 單一指標失敗不應中斷整份報告
-        return None, None, f"{type(exc).__name__}: {exc}"
+        return None, None, safe_error(exc)
