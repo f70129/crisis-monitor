@@ -41,9 +41,9 @@ INDICATORS = [
 
     # ---------- 02 信用收縮 ----------
     {"id": "sloos", "layer": "credit", "name": "SLOOS 商用放款淨緊縮比例",
-     "note": "季更。翻正代表銀行開始關水龍頭",
+     "note": "季更（FRED DRTSCILM）。翻正代表銀行開始關水龍頭",
      "unit": "%", "dir": "high", "warn": 0, "danger": 20,
-     "ref": "32", "ref_when": "2007Q4", "source": "manual", "stale_days": 120},
+     "ref": "32", "ref_when": "2007Q4", "source": "fred:DRTSCILM"},
 
     {"id": "hyoas", "layer": "credit", "name": "高收益債利差 HY OAS",
      "note": "絕對值低不代表安全，擴大速度才是訊號：60日擴大 100bp 直接判警戒",

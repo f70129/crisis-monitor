@@ -1,14 +1,9 @@
 {
-  "_說明": "只有這幾項需要手動維護。有新數據時改 value 與 as_of（YYYY-MM-DD），其餘欄位不用動。",
+  "_說明": "只有這幾項需要手動維護。有新數據時改 value 與 as_of（YYYY-MM-DD），其餘欄位不用動。SLOOS 已改為自動抓取 FRED DRTSCILM。",
   "nahb": {
     "value": null,
     "as_of": null,
     "來源": "nahb.org 住宅市場指數（月更，每月中旬）"
-  },
-  "sloos": {
-    "value": null,
-    "as_of": null,
-    "來源": "Fed SLOOS 商用工業放款「淨緊縮家數比例」（季更，1/4/7/10月）"
   },
   "xccy": {
     "value": null,
