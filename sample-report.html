@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>金融海嘯預警對照表 2026-08-30</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ground:#EDF0F2;--panel:#FFF;--ink:#16202B;--muted:#6C7A87;--rule:#D5DCE2;
+--rule-soft:#E7ECEF;--safe:#1B7F5A;--warn:#C07A14;--danger:#BE3A2E;--ghost:#7A4A5B;
+--serif:"Noto Serif TC",Georgia,serif;--sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+--mono:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:15px;
+line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 18px 64px}
+.masthead{border-bottom:2px solid var(--ink);padding-bottom:14px;margin-bottom:20px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+color:var(--muted);margin:0 0 6px}
+.masthead h1{font-family:var(--serif);font-weight:700;font-size:clamp(26px,5vw,40px);
+line-height:1.15;letter-spacing:-.01em;margin:0 0 8px}
+.masthead p{margin:0;color:var(--muted);font-size:13.5px;max-width:62ch}
+.stamp{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px}
+.ladder{background:var(--panel);border:1px solid var(--rule);padding:18px 16px 14px;margin-bottom:24px}
+.ladder-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+border-bottom:1px solid var(--rule-soft);padding-bottom:12px;margin-bottom:14px}
+.ladder-head h2{font-family:var(--serif);font-size:17px;margin:0;font-weight:600}
+.ladder-head .sub{font-size:12.5px;color:var(--muted)}
+.depth{margin-left:auto;font-family:var(--mono);font-size:12px;border:1px solid var(--rule);padding:4px 10px}
+.depth.hot{border-color:var(--danger);color:var(--danger)}
+.rung{display:grid;grid-template-columns:96px 1fr 62px;gap:12px;align-items:center;padding:7px 0}
+.rung+.rung{border-top:1px dashed var(--rule-soft)}
+.rung-name{font-size:13px;font-weight:500}
+.rung-name small{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.06em}
+.ticks{display:flex;gap:4px;height:22px}
+.tick{flex:1;background:var(--rule-soft);border-radius:1px;min-width:8px}
+.tick.safe{background:var(--safe)}.tick.warn{background:var(--warn)}.tick.danger{background:var(--danger)}
+.rung-score{font-family:var(--mono);font-size:13px;text-align:right;color:var(--muted)}
+.rung-score.hot{color:var(--danger);font-weight:600}
+section{margin-bottom:24px}
+.sec-head{display:flex;align-items:baseline;gap:10px;margin:0 0 4px}
+.sec-num{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em}
+.sec-head h2{font-family:var(--serif);font-size:19px;margin:0;font-weight:600}
+.sec-head .lead{font-size:12px;color:var(--muted);margin-left:auto;font-family:var(--mono)}
+.sec-desc{font-size:11.5px;color:var(--muted);margin:0 0 8px}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--rule)}
+thead th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+color:var(--muted);font-weight:500;text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule)}
+thead th.num{text-align:right}
+tbody td{padding:9px 10px;border-bottom:1px solid var(--rule-soft);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+.ind-name{font-size:13.5px;font-weight:500;line-height:1.35}
+.ind-note{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+.ind-note.stale{color:var(--danger)}
+.ref{font-family:var(--mono);font-size:13.5px;color:var(--ghost);text-align:right;white-space:nowrap}
+.ref small{display:block;font-size:10px;opacity:.75;letter-spacing:.05em}
+.thresh{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-align:right;white-space:nowrap}
+.now{font-family:var(--mono);font-size:15px;text-align:right;white-space:nowrap;font-weight:500}
+.now small{display:block;font-size:10px;color:var(--muted);font-weight:400;letter-spacing:.04em}
+td.st{width:78px;text-align:right}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+padding:3px 8px;border:1px solid currentColor;white-space:nowrap}
+.badge.safe{color:var(--safe)}.badge.warn{color:var(--warn)}
+.badge.danger{color:#fff;background:var(--danger);border-color:var(--danger)}
+.badge.none{color:#AEB8C0}
+.hist{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;margin-top:8px}
+.hist h2{font-family:var(--serif);font-size:17px;margin:0 0 10px;font-weight:600}
+.hist-row{display:grid;grid-template-columns:104px 1fr 46px;gap:10px;align-items:center;
+padding:6px 0;border-top:1px solid var(--rule-soft)}
+.hist-row:first-child{border-top:none}
+.hist-date{font-family:var(--mono);font-size:12.5px}
+.bar{height:8px;background:var(--rule-soft)}.bar span{display:block;height:100%;background:var(--ink)}
+.hist-score{font-family:var(--mono);font-size:12.5px;text-align:right}
+.errs{margin-top:18px;border:1px solid var(--rule);background:var(--panel);padding:12px 14px}
+.errs h3{font-family:var(--serif);font-size:14px;margin:0 0 6px;font-weight:600}
+.errs li{font-size:11.5px;color:var(--muted);font-family:var(--mono)}
+.disclaimer{margin-top:20px;font-size:11.5px;color:var(--muted);line-height:1.6;
+border-top:1px dashed var(--rule);padding-top:12px}
+@media (max-width:720px){
+ body{font-size:14px}
+ thead{display:none}
+ table,tbody,tr,td{display:block;width:100%}
+ table{border:none;background:transparent}
+ tbody tr{background:var(--panel);border:1px solid var(--rule);margin-bottom:8px;padding:10px 12px;
+  display:grid;grid-template-columns:1fr auto;gap:6px 10px}
+ tbody td{border:none;padding:0}
+ td.name{grid-column:1/-1}
+ .ref,.thresh,.now{text-align:left}
+ .ref::before{content:"2007 ";font-family:var(--mono);font-size:10px;color:var(--muted)}
+ .thresh::before{content:"閾值 ";font-size:10px}
+ td.st{text-align:right;align-self:center}
+ .rung{grid-template-columns:80px 1fr 48px}
+}
+</style></head><body><div class="wrap">
+<header class="masthead">
+<p class="eyebrow">Credit Stress Monitor · 2007 vs Today</p>
+<h1>金融海嘯預警對照表</h1>
+<p>2008 是信用與槓桿危機，股價最後才反應。這張表盯的是資金的價格，不是資產的價格——依訊號領先時間分四層，看壓力傳導到了哪一層。</p>
+<p class="stamp">更新時間 2026-08-30 23:26 (台北)　·　綜合壓力 47%　·　已取得 18／19 項</p>
+</header>
+<div class="ladder">
+<div class="ladder-head"><h2>壓力傳導階梯</h2>
+<span class="sub">危機由上往下燒：結構失衡 → 信用收縮 → 流動性斷裂 → 台灣外溢</span>
+<span class="depth hot">傳導深度：信用收縮</span></div>
+<div class="rung"><div class="rung-name">結構失衡<small>STRUCTURE</small></div><div class="ticks"><span class="tick warn"></span><span class="tick warn"></span><span class="tick danger"></span><span class="tick warn"></span></div><div class="rung-score hot">62%</div></div><div class="rung"><div class="rung-name">信用收縮<small>CREDIT</small></div><div class="ticks"><span class="tick warn"></span><span class="tick warn"></span><span class="tick safe"></span><span class="tick danger"></span></div><div class="rung-score hot">50%</div></div><div class="rung"><div class="rung-name">流動性斷裂<small>LIQUIDITY</small></div><div class="ticks"><span class="tick safe"></span><span class="tick "></span><span class="tick warn"></span><span class="tick safe"></span><span class="tick danger"></span></div><div class="rung-score ">38%</div></div><div class="rung"><div class="rung-name">台灣外溢<small>TAIWAN</small></div><div class="ticks"><span class="tick warn"></span><span class="tick warn"></span><span class="tick danger"></span><span class="tick warn"></span><span class="tick safe"></span><span class="tick safe"></span></div><div class="rung-score ">42%</div></div>
+</div>
+<section><div class="sec-head"><span class="sec-num">01</span><h2>結構失衡</h2><span class="lead">領先 12–18 個月</span></div><p class="sec-desc">槓桿與房市已經歪掉，但市場還沒開始付代價</p><table><thead><tr><th>指標</th><th class="num">2007 對照</th><th class="num">閾值</th><th class="num">最新讀數</th><th class="num">狀態</th></tr></thead><tbody><tr><td class="name"><div class="ind-name">10年–3個月 殖利率利差</div><div class="ind-note">倒掛是計時器起點；真正的倒數是倒掛後急速轉正</div></td><td><div class="ref">−0.36%<small>2007/01</small></div></td><td class="thresh">警 ≤0.5% · 危 ≤0.0%</td><td class="now">0.42%<small>2026-08-28</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">10年–2年 殖利率利差</div><div class="ind-note">比 10Y–3M 早倒掛，但雜訊較多</div></td><td><div class="ref">−0.19%<small>2006/11</small></div></td><td class="thresh">警 ≤0.3% · 危 ≤0.0%</td><td class="now">0.28%<small>2026-08-28</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">Case-Shiller 20城 房價年增率</div><div class="ind-note">2006 年底就翻負，領先股市高點近一年</div></td><td><div class="ref">−9.1%<small>2007/12</small></div></td><td class="thresh">警 ≤3.0% · 危 ≤0.0%</td><td class="now">-1.4%<small>2026-06-01</small></td><td class="st"><span class="badge danger">危險</span></td></tr><tr><td class="name"><div class="ind-name">NAHB 住宅市場指數</div><div class="ind-note">建商信心，房市最靈敏的月更指標</div></td><td><div class="ref">20<small>2007/09</small></div></td><td class="thresh">警 ≤50 · 危 ≤35</td><td class="now">44<small>2026-08-18</small></td><td class="st"><span class="badge warn">警戒</span></td></tr></tbody></table></section><section><div class="sec-head"><span class="sec-num">02</span><h2>信用收縮</h2><span class="lead">領先 6–12 個月</span></div><p class="sec-desc">銀行開始縮手、風險溢酬回補，股市通常還在高檔</p><table><thead><tr><th>指標</th><th class="num">2007 對照</th><th class="num">閾值</th><th class="num">最新讀數</th><th class="num">狀態</th></tr></thead><tbody><tr><td class="name"><div class="ind-name">SLOOS 商用放款淨緊縮比例</div><div class="ind-note">季更。翻正代表銀行開始關水龍頭</div></td><td><div class="ref">32%<small>2007Q4</small></div></td><td class="thresh">警 ≥0% · 危 ≥20%</td><td class="now">6%<small>2026-08-05</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">高收益債利差 HY OAS</div><div class="ind-note">從歷史低檔擴大 100bp 以上且不回頭最關鍵</div></td><td><div class="ref">5.7%<small>2007/12</small></div></td><td class="thresh">警 ≥4.0% · 危 ≥6.0%</td><td class="now">4.6%<small>2026-08-28</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">投資級債利差 IG OAS</div><div class="ind-note">IG 也擴代表壓力不只在垃圾債</div></td><td><div class="ref">1.8%<small>2007/12</small></div></td><td class="thresh">警 ≥1.3% · 危 ≥2.0%</td><td class="now">0.98%<small>2026-08-28</small></td><td class="st"><span class="badge safe">安全</span></td></tr><tr><td class="name"><div class="ind-name">XLF 距 52 週高點</div><div class="ind-note">金融股先跌，2007 年初就領先大盤走弱</div></td><td><div class="ref">−25%<small>2007/11</small></div></td><td class="thresh">警 ≤-10% · 危 ≤-20%</td><td class="now">-22%<small>2026-08-29</small></td><td class="st"><span class="badge danger">危險</span></td></tr></tbody></table></section><section><div class="sec-head"><span class="sec-num">03</span><h2>流動性斷裂</h2><span class="lead">領先 1–6 個月</span></div><p class="sec-desc">錢開始借不到。到這一層，時間就不是用年在算了</p><table><thead><tr><th>指標</th><th class="num">2007 對照</th><th class="num">閾值</th><th class="num">最新讀數</th><th class="num">狀態</th></tr></thead><tbody><tr><td class="name"><div class="ind-name">SOFR − 3個月國庫券（資金壓力代理）</div><div class="ind-note">免費代理；當年對應指標為 TED spread，非等價但方向一致</div></td><td><div class="ref">240bp<small>2007/08 (TED)</small></div></td><td class="thresh">警 ≥25bp · 危 ≥50bp</td><td class="now">18bp<small>2026-08-28</small></td><td class="st"><span class="badge safe">安全</span></td></tr><tr><td class="name"><div class="ind-name">3個月 歐元/美元 交叉貨幣基差</div><div class="ind-note">無免費來源，需手動；轉深負值＝美元荒</div></td><td><div class="ref">−90bp<small>2007/12</small></div></td><td class="thresh">警 ≤-25bp · 危 ≤-50bp</td><td class="now">—<small>無資料</small></td><td class="st"><span class="badge none">未取得</span></td></tr><tr><td class="name"><div class="ind-name">Sahm Rule 值</div><div class="ind-note">失業率3月均值減前12月低點，≥0.5 視為衰退已開始</div></td><td><div class="ref">0.53pp<small>2008/01</small></div></td><td class="thresh">警 ≥0.3pp · 危 ≥0.5pp</td><td class="now">0.33pp<small>2026-07-01</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">VIX</div><div class="ind-note">確認用不是預警用——VIX 通常最後才動</div></td><td><div class="ref">30.8<small>2007/08</small></div></td><td class="thresh">警 ≥20 · 危 ≥30</td><td class="now">17.2<small>2026-08-28</small></td><td class="st"><span class="badge safe">安全</span></td></tr><tr><td class="name"><div class="ind-name">HYG 減 SPY 近20日報酬</div><div class="ind-note">信用先破底、股市還創高＝背離，信用通常對</div></td><td><div class="ref">−6%<small>2007/11</small></div></td><td class="thresh">警 ≤-1.5% · 危 ≤-3.0%</td><td class="now">-3.4%<small>2026-08-29</small></td><td class="st"><span class="badge danger">危險</span></td></tr></tbody></table></section><section><div class="sec-head"><span class="sec-num">04</span><h2>台灣外溢</h2><span class="lead">同步至落後 1–3 個月</span></div><p class="sec-desc">台股是外資與出口的槓桿放大器，跟在美國信用訊號之後</p><table><thead><tr><th>指標</th><th class="num">2007 對照</th><th class="num">閾值</th><th class="num">最新讀數</th><th class="num">狀態</th></tr></thead><tbody><tr><td class="name"><div class="ind-name">外銷訂單年增率</div><div class="ind-note stale">連續3個月負成長是實質確認（經濟部統計處）　⚠ 資料已 102 天未更新</div></td><td><div class="ref">−28.6%<small>2008/11</small></div></td><td class="thresh">警 ≤0% · 危 ≤-5%</td><td class="now">-1.2%<small>2026-05-20</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">景氣對策信號分數</div><div class="ind-note">16分以下為藍燈（國發會）</div></td><td><div class="ref">9分<small>2008/12</small></div></td><td class="thresh">警 ≤22分 · 危 ≤16分</td><td class="now">21分<small>2026-08-27</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">外資近5日累計買賣超</div><div class="ind-note">連續大額賣超搭配匯出才算訊號</div></td><td><div class="ref">−900億<small>2008/09</small></div></td><td class="thresh">警 ≤-200億 · 危 ≤-500億</td><td class="now">-612億<small>2026-08-29</small></td><td class="st"><span class="badge danger">危險</span></td></tr><tr><td class="name"><div class="ind-name">台指期外資淨未平倉</div><div class="ind-note">淨空單快速擴大＝外資避險加碼</div></td><td><div class="ref">−20000口<small>2008/10</small></div></td><td class="thresh">警 ≤-5000口 · 危 ≤-15000口</td><td class="now">-8,200口<small>2026-08-29</small></td><td class="st"><span class="badge warn">警戒</span></td></tr><tr><td class="name"><div class="ind-name">融資餘額近20日變化</div><div class="ind-note">急速去化＝散戶被斷頭</div></td><td><div class="ref">−25%<small>2008/10</small></div></td><td class="thresh">警 ≤-5% · 危 ≤-10%</td><td class="now">-2.1%<small>2026-08-29</small></td><td class="st"><span class="badge safe">安全</span></td></tr><tr><td class="name"><div class="ind-name">台幣近20日貶值幅度</div><div class="ind-note">正值為貶值；急貶常伴隨外資匯出</div></td><td><div class="ref">5.2%<small>2008/10</small></div></td><td class="thresh">警 ≥1.5% · 危 ≥3.0%</td><td class="now">0.7%<small>2026-08-29</small></td><td class="st"><span class="badge safe">安全</span></td></tr></tbody></table></section>
+<div class="hist"><h2>近期綜合壓力</h2><div class="hist-row"><span class="hist-date">2026-08-30</span><span class="bar"><span style="width:47%"></span></span><span class="hist-score">47</span></div><div class="hist-row"><span class="hist-date">2026-08-28</span><span class="bar"><span style="width:30%"></span></span><span class="hist-score">30</span></div></div>
+
+<p class="disclaimer">2007 對照欄為該指標在危機前後的概略代表值，用於量級比較而非精確重建。SOFR−3個月國庫券為 TED spread 的免費代理，非等價指標。本頁為個人研究與紀錄工具，所載內容僅供參考，不構成任何投資建議或買賣要約，投資人應自行判斷並承擔風險。</p>
+</div></body></html>
