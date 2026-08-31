@@ -67,11 +67,10 @@ INDICATORS = [
      "unit": "bp", "dir": "high", "warn": 15, "danger": 30,
      "ref": "240", "ref_when": "2007/08 (TED)", "source": "fred_spread:SOFR-DTB3"},
 
-    {"id": "xccy", "layer": "liquidity", "name": "3個月 歐元/美元 交叉貨幣基差",
-     "note": "無免費來源，需手動；轉深負值＝美元荒",
-     "unit": "bp", "dir": "low", "warn": -25, "danger": -50,
-     "ref": "−90", "ref_when": "2007/12", "source": "manual", "stale_days": 30,
-     "optional": True},
+    {"id": "usdidx", "layer": "liquidity", "name": "美元指數近20日變化（美元荒代理）",
+     "note": "美元急升＝跨境美元需求緊縮。混雜避險買盤，不如交叉貨幣基差純粹，但免費且日更",
+     "unit": "%", "dir": "high", "warn": 2.5, "danger": 4.0,
+     "ref": "+8", "ref_when": "2008/10", "source": "fred_pct:DTWEXBGS"},
 
     {"id": "sahm", "layer": "liquidity", "name": "Sahm Rule 值",
      "note": "失業率3月均值減前12月低點，≥0.5 視為衰退已開始",
@@ -92,7 +91,7 @@ INDICATORS = [
     {"id": "exports", "layer": "taiwan", "name": "外銷訂單年增率",
      "note": "連續3個月負成長是實質確認（經濟部統計處）",
      "unit": "%", "dir": "low", "warn": 0, "danger": -5,
-     "ref": "−28.6", "ref_when": "2008/11", "source": "manual", "stale_days": 60},
+     "ref": "−28.6", "ref_when": "2008/11", "source": "manual", "stale_days": 75},
 
     {"id": "bizsig", "layer": "taiwan", "name": "景氣對策信號分數",
      "note": "16分以下為藍燈（國發會，經 FinMind 取得）",

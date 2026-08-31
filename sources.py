@@ -249,6 +249,17 @@ def margin_chg20():
     return val, series[-1][0], None
 
 
+def fred_pct(series_id, lookback=20):
+    """最新值相對 lookback 期前的變化率 (%)。用於指數型序列。"""
+    rows = fred_series(series_id)
+    if len(rows) < lookback + 1:
+        return None, None, f"{series_id} 資料不足 {lookback + 1} 筆"
+    base = rows[-1 - lookback][1]
+    if base == 0:
+        return None, None, "基期為 0"
+    return round((rows[-1][1] / base - 1) * 100, 2), rows[-1][0], None
+
+
 def fred_delta(series_id, lookback):
     """最新值減去 lookback 期前的值。"""
     rows = fred_series(series_id)
@@ -344,6 +355,8 @@ def fetch(source):
             return fred_spread(a, b)
         if kind == "fred_sahm":
             return fred_sahm(arg)
+        if kind == "fred_pct":
+            return fred_pct(arg)
         if kind == "yf_drawdown":
             return yf_drawdown(arg)
         if kind == "yf_change":

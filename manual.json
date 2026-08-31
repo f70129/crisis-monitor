@@ -1,13 +1,8 @@
 {
-  "_說明": "剩下的手動項目。有新數據時改 value 與 as_of（YYYY-MM-DD）。SLOOS→FRED DRTSCILM、景氣信號→FinMind、NAHB→FRED PERMIT 年增率，皆已改為自動。",
-  "xccy": {
-    "value": null,
-    "as_of": null,
-    "來源": "3個月 EUR/USD 交叉貨幣基差 bp，無免費來源，可留空"
-  },
+  "_說明": "唯一需要手動維護的項目。經濟部次月20-23日發布外銷訂單後，改 value 與 as_of（as_of 填資料月份的1號）。其餘 18 項全部自動抓取。",
   "exports": {
-    "value": null,
-    "as_of": null,
-    "來源": "經濟部統計處 外銷訂單年增率（月更，每月20日左右）"
+    "value": 61.9,
+    "as_of": "2026-07-01",
+    "來源": "經濟部統計處 外銷訂單統計（月更，次月20-23日發布）；as_of 填資料月份的1號"
   }
 }
