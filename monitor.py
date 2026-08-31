@@ -203,9 +203,19 @@ def debug_finmind():
         print(f"  筆數：{len(data)}")
         print(f"  欄位：{sorted(data[0])}")
         print(f"  最後一列：{data[-1]}")
-        for key in ("name", "institutional_investor"):
+        for key in ("name", "institutional_investor", "institutional_investors"):
             if key in data[0]:
                 print(f"  {key} 的所有值：{sorted({str(r.get(key)) for r in data})}")
+
+    # 外銷訂單：FinMind 是否有對應資料集尚未確認，逐一探測
+    print("\n=== 探測外銷訂單可用資料集 ===")
+    for name in ("TaiwanExportOrders", "TaiwanExportOrder", "TaiwanTotalExportOrder",
+                 "TaiwanEconomicIndicator", "TaiwanTradeStatistics", "TaiwanExport"):
+        try:
+            data = sources.fetch_finmind(name, "", days=400)
+            print(f"  ✅ {name}：{len(data)} 筆　欄位={sorted(data[0]) if data else '空'}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"  ✗  {name}：{sources.safe_error(exc)[:70]}")
 
 
 # ------------------------------------------------------------------ 主流程

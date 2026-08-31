@@ -1,10 +1,5 @@
 {
-  "_說明": "只有這幾項需要手動維護。有新數據時改 value 與 as_of（YYYY-MM-DD），其餘欄位不用動。SLOOS 已改為自動抓取 FRED DRTSCILM。",
-  "nahb": {
-    "value": null,
-    "as_of": null,
-    "來源": "nahb.org 住宅市場指數（月更，每月中旬）"
-  },
+  "_說明": "剩下的手動項目。有新數據時改 value 與 as_of（YYYY-MM-DD）。SLOOS→FRED DRTSCILM、景氣信號→FinMind、NAHB→FRED PERMIT 年增率，皆已改為自動。",
   "xccy": {
     "value": null,
     "as_of": null,
@@ -14,10 +9,5 @@
     "value": null,
     "as_of": null,
     "來源": "經濟部統計處 外銷訂單年增率（月更，每月20日左右）"
-  },
-  "bizsig": {
-    "value": null,
-    "as_of": null,
-    "來源": "國發會 景氣對策信號分數（月更，每月27日左右）"
   }
 }

@@ -34,10 +34,10 @@ INDICATORS = [
      "unit": "%", "dir": "low", "warn": 3.0, "danger": 0.0,
      "ref": "−9.1", "ref_when": "2007/12", "source": "fred_yoy:SPCS20RSA"},
 
-    {"id": "nahb", "layer": "structure", "name": "NAHB 住宅市場指數",
-     "note": "建商信心，房市最靈敏的月更指標",
-     "unit": "", "dir": "low", "warn": 50, "danger": 35,
-     "ref": "20", "ref_when": "2007/09", "source": "manual", "stale_days": 45},
+    {"id": "nahb", "layer": "structure", "name": "營建許可年增率（NAHB 替代）",
+     "note": "NAHB 指數為授權資料、無免費 API，改用同樣前瞻的營建許可核發量",
+     "unit": "%", "dir": "low", "warn": -5, "danger": -15,
+     "ref": "−30", "ref_when": "2007/12", "source": "fred_yoy:PERMIT"},
 
     # ---------- 02 信用收縮 ----------
     {"id": "sloos", "layer": "credit", "name": "SLOOS 商用放款淨緊縮比例",
@@ -95,9 +95,9 @@ INDICATORS = [
      "ref": "−28.6", "ref_when": "2008/11", "source": "manual", "stale_days": 60},
 
     {"id": "bizsig", "layer": "taiwan", "name": "景氣對策信號分數",
-     "note": "16分以下為藍燈（國發會）",
+     "note": "16分以下為藍燈（國發會，經 FinMind 取得）",
      "unit": "分", "dir": "low", "warn": 22, "danger": 16,
-     "ref": "9", "ref_when": "2008/12", "source": "manual", "stale_days": 45},
+     "ref": "9", "ref_when": "2008/12", "source": "finmind:business_indicator"},
 
     {"id": "fininet", "layer": "taiwan", "name": "外資近5日累計買賣超",
      "note": "連續大額賣超搭配匯出才算訊號",

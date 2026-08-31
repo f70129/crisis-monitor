@@ -275,6 +275,50 @@ def safe_error(exc):
     return msg[:200]
 
 
+SCORE_HINTS = ("分數", "score", "signal", "信號")
+# 景氣對策信號分數依定義只可能落在 9–45 分，這是最強的防呆
+SCORE_MIN, SCORE_MAX = 9, 45
+
+
+def business_indicator():
+    """景氣對策信號分數（國發會，月更）。
+
+    FinMind 這個資料集的欄位結構未經確認，因此用三層策略取值，
+    最後一律以 9–45 的定義域驗證。取不到寧可回報錯誤，不猜。
+    """
+    data = fetch_finmind("TaiwanBusinessIndicator", days=400)
+    if not data:
+        return None, None, "景氣指標無資料"
+
+    # 1) 有字串欄位時，先挑出標示為「分數／信號」的列
+    rows = [r for r in data
+            if any(isinstance(v, str) and any(h in v for h in SCORE_HINTS)
+                   for v in r.values())]
+    # 2) 否則挑欄位名稱帶分數字樣的列
+    if not rows:
+        rows = [r for r in data
+                if any(any(h in k for h in SCORE_HINTS) for k in r)]
+    # 3) 都沒有就用全部，靠定義域篩
+    if not rows:
+        rows = data
+
+    latest = max(r["date"] for r in rows)
+    for row in rows:
+        if row["date"] != latest:
+            continue
+        for key, val in row.items():
+            if key == "date":
+                continue
+            try:
+                num = float(val)
+            except (TypeError, ValueError):
+                continue
+            if SCORE_MIN <= num <= SCORE_MAX and num.is_integer():
+                return int(num), latest, None
+
+    return None, None, f"找不到 9–45 分的景氣分數（{_describe(data)}）"
+
+
 # ---------------------------------------------------------------- 分派
 def fetch_delta(source, lookback):
     """取變化幅度。目前只有 FRED 單一序列支援，其餘回傳 none。"""
@@ -310,7 +354,8 @@ def fetch(source):
         if kind == "finmind":
             return {"foreign_net5": foreign_net5,
                     "txf_foreign_oi": txf_foreign_oi,
-                    "margin_chg20": margin_chg20}[arg]()
+                    "margin_chg20": margin_chg20,
+                    "business_indicator": business_indicator}[arg]()
         return None, None, f"未知來源 {source}"
     except Exception as exc:  # noqa: BLE001 — 單一指標失敗不應中斷整份報告
         return None, None, safe_error(exc)
