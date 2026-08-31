@@ -6,15 +6,15 @@
   },
   "layers": {
    "credit": 12,
-   "liquidity": 12,
+   "liquidity": 10,
    "structure": 12,
-   "taiwan": 20
+   "taiwan": 17
   },
-  "score": 15,
+  "score": 13,
   "states": {
    "bizsig": "safe",
    "cshiller": "warn",
-   "exports": "none",
+   "exports": "safe",
    "fininet": "safe",
    "hygspy": "warn",
    "hyoas": "safe",
@@ -26,8 +26,8 @@
    "sofrproxy": "safe",
    "twd": "safe",
    "txfoi": "danger",
+   "usdidx": "safe",
    "vix": "safe",
-   "xccy": "none",
    "xlfdd": "safe",
    "y10y2y": "safe",
    "y10y3m": "safe"
@@ -35,7 +35,7 @@
   "values": {
    "bizsig": 41,
    "cshiller": 2.08,
-   "exports": null,
+   "exports": 61.9,
    "fininet": 1109.4,
    "hygspy": -2.18,
    "hyoas": 2.63,
@@ -45,10 +45,10 @@
    "sahm": 0.0,
    "sloos": 0.0,
    "sofrproxy": -5.0,
-   "twd": -1.84,
+   "twd": -1.83,
    "txfoi": -83655,
+   "usdidx": -2.19,
    "vix": 14.51,
-   "xccy": null,
    "xlfdd": -0.36,
    "y10y2y": 0.39,
    "y10y3m": 0.83
