@@ -15,7 +15,7 @@ import requests
 
 import sources
 from indicators import (INDICATORS, LAYERS, STATE_LABEL, STATE_POINTS,
-                        state_of, threshold_text)
+                        delta_state, state_of, threshold_text, worse)
 from render import build_html, build_markdown, fmt_value
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -55,6 +55,7 @@ def age_in_days(as_of, today):
 def collect(manual, today):
     results, errors = [], []
     for ind in INDICATORS:
+        delta = None
         if ind["source"] == "manual":
             entry = manual.get(ind["id"]) or {}
             value = entry.get("value")
@@ -62,6 +63,8 @@ def collect(manual, today):
             err = None if value is not None else "manual.json 尚未填入"
         else:
             value, as_of, err = sources.fetch(ind["source"])
+            if ind.get("delta") and value is not None:
+                delta, _, _ = sources.fetch_delta(ind["source"], ind["delta"]["lookback"])
 
         age = age_in_days(as_of, today) if as_of else None
         stale = (ind["source"] == "manual" and age is not None
@@ -70,8 +73,11 @@ def collect(manual, today):
         if err and not ind.get("optional"):
             errors.append((ind["name"], err))
 
+        # 水準與變化率各判一次，取較嚴重者：絕對值還低但擴大很快，一樣要示警
+        state = worse(state_of(ind, value), delta_state(ind, delta))
+
         results.append({"ind": ind, "value": value, "as_of": as_of,
-                        "state": state_of(ind, value), "error": err,
+                        "state": state, "error": err, "delta": delta,
                         "age_days": age, "stale": stale})
     return results, errors
 
@@ -196,6 +202,7 @@ def main():
         "layers": summary["layers"],
         "states": {r["ind"]["id"]: r["state"] for r in results},
         "values": {r["ind"]["id"]: r["value"] for r in results},
+        "deltas": {r["ind"]["id"]: r["delta"] for r in results if r["delta"] is not None},
     }
     for key in sorted(history)[:-HISTORY_KEEP]:
         del history[key]

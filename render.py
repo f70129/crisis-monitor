@@ -122,6 +122,14 @@ __ERRORS__
 """
 
 
+def fmt_delta(ind, delta):
+    """把 60 日變化寫成 +0.12 這種形式，沒有設定或取不到就回空字串。"""
+    cfg = ind.get("delta")
+    if not cfg or delta is None:
+        return ""
+    return f"　{cfg['lookback']}日 {delta:+g}{ind['unit']}"
+
+
 def fmt_value(ind, value):
     if value is None:
         return "—"
@@ -164,7 +172,8 @@ def build_html(results, summary, history, errors, stamp):
                 f'<div class="{note_cls}">{note}</div></td>'
                 f'<td><div class="ref">{ind["ref"]}{ind["unit"]}<small>{ind["ref_when"]}</small></div></td>'
                 f'<td class="thresh">{threshold_text(ind)}</td>'
-                f'<td class="now">{fmt_value(ind, r["value"])}<small>{as_of}</small></td>'
+                f'<td class="now">{fmt_value(ind, r["value"])}'
+                f'<small>{as_of}{fmt_delta(ind, r.get("delta"))}</small></td>'
                 f'<td class="st"><span class="badge {r["state"]}">{STATE_LABEL[r["state"]]}</span></td></tr>')
         sections.append(
             f'<section><div class="sec-head"><span class="sec-num">{layer["num"]}</span>'
@@ -228,7 +237,7 @@ def build_markdown(results, summary, errors, stamp):
         for r in by_layer[layer["id"]]:
             ind = r["ind"]
             out.append(f"| {icon[r['state']]} {STATE_LABEL[r['state']]} | {ind['name']} | "
-                       f"{fmt_value(ind, r['value'])} | {ind['ref']}{ind['unit']}"
+                       f"{fmt_value(ind, r['value'])}{fmt_delta(ind, r.get('delta'))} | {ind['ref']}{ind['unit']}"
                        f"（{ind['ref_when']}） | {threshold_text(ind)} | {r['as_of'] or '—'} |")
         out.append("")
 

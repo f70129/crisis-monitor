@@ -19,8 +19,9 @@ LAYERS = [
 INDICATORS = [
     # ---------- 01 結構失衡 ----------
     {"id": "y10y3m", "layer": "structure", "name": "10年–3個月 殖利率利差",
-     "note": "倒掛是計時器起點；真正的倒數是倒掛後急速轉正",
+     "note": "本循環倒掛已發生過，現在看的是陡峭化速度（無法區分多頭/空頭陡峭化，需搭配短端方向判讀）",
      "unit": "%", "dir": "low", "warn": 0.5, "danger": 0.0,
+     "delta": {"lookback": 60, "dir": "high", "warn": 0.4, "danger": 0.7},
      "ref": "−0.36", "ref_when": "2007/01", "source": "fred:T10Y3M"},
 
     {"id": "y10y2y", "layer": "structure", "name": "10年–2年 殖利率利差",
@@ -45,13 +46,14 @@ INDICATORS = [
      "ref": "32", "ref_when": "2007Q4", "source": "manual", "stale_days": 120},
 
     {"id": "hyoas", "layer": "credit", "name": "高收益債利差 HY OAS",
-     "note": "從歷史低檔擴大 100bp 以上且不回頭最關鍵",
-     "unit": "%", "dir": "high", "warn": 4.0, "danger": 6.0,
+     "note": "絕對值低不代表安全，擴大速度才是訊號：60日擴大 100bp 直接判警戒",
+     "unit": "%", "dir": "high", "warn": 3.5, "danger": 4.5,
+     "delta": {"lookback": 60, "dir": "high", "warn": 1.0, "danger": 1.5},
      "ref": "5.7", "ref_when": "2007/12", "source": "fred:BAMLH0A0HYM2"},
 
     {"id": "igoas", "layer": "credit", "name": "投資級債利差 IG OAS",
      "note": "IG 也擴代表壓力不只在垃圾債",
-     "unit": "%", "dir": "high", "warn": 1.3, "danger": 2.0,
+     "unit": "%", "dir": "high", "warn": 1.0, "danger": 1.3,
      "ref": "1.8", "ref_when": "2007/12", "source": "fred:BAMLC0A0CM"},
 
     {"id": "xlfdd", "layer": "credit", "name": "XLF 距 52 週高點",
@@ -62,7 +64,7 @@ INDICATORS = [
     # ---------- 03 流動性斷裂 ----------
     {"id": "sofrproxy", "layer": "liquidity", "name": "SOFR − 3個月國庫券（資金壓力代理）",
      "note": "免費代理；當年對應指標為 TED spread，非等價但方向一致",
-     "unit": "bp", "dir": "high", "warn": 25, "danger": 50,
+     "unit": "bp", "dir": "high", "warn": 15, "danger": 30,
      "ref": "240", "ref_when": "2007/08 (TED)", "source": "fred_spread:SOFR-DTB3"},
 
     {"id": "xccy", "layer": "liquidity", "name": "3個月 歐元/美元 交叉貨幣基差",
@@ -120,6 +122,27 @@ INDICATORS = [
 
 STATE_LABEL = {"safe": "安全", "warn": "警戒", "danger": "危險", "none": "未取得"}
 STATE_POINTS = {"safe": 0, "warn": 1, "danger": 2}
+STATE_ORDER = {"none": -1, "safe": 0, "warn": 1, "danger": 2}
+
+
+def worse(state_a, state_b):
+    """取兩個狀態中較嚴重者；none 不會蓋掉已判定的狀態。"""
+    return state_a if STATE_ORDER[state_a] >= STATE_ORDER[state_b] else state_b
+
+
+def delta_state(ind, delta):
+    """依變化幅度判定狀態。沒有設定 delta 或取不到值時回傳 none。"""
+    cfg = ind.get("delta")
+    if not cfg or delta is None:
+        return "none"
+    d = float(delta)
+    if cfg["dir"] == "low":
+        if d <= cfg["danger"]:
+            return "danger"
+        return "warn" if d <= cfg["warn"] else "safe"
+    if d >= cfg["danger"]:
+        return "danger"
+    return "warn" if d >= cfg["warn"] else "safe"
 
 
 def state_of(ind, value):

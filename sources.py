@@ -192,7 +192,26 @@ def margin_chg20():
     return val, series[-1][0], None
 
 
+def fred_delta(series_id, lookback):
+    """最新值減去 lookback 期前的值。"""
+    rows = fred_series(series_id)
+    if len(rows) < lookback + 1:
+        return None, None, f"{series_id} 資料不足 {lookback + 1} 筆"
+    return round(rows[-1][1] - rows[-1 - lookback][1], 3), rows[-1][0], None
+
+
 # ---------------------------------------------------------------- 分派
+def fetch_delta(source, lookback):
+    """取變化幅度。目前只有 FRED 單一序列支援，其餘回傳 none。"""
+    try:
+        kind, _, arg = source.partition(":")
+        if kind == "fred":
+            return fred_delta(arg, lookback)
+        return None, None, f"{source} 不支援變化率"
+    except Exception as exc:  # noqa: BLE001
+        return None, None, f"{type(exc).__name__}: {exc}"
+
+
 def fetch(source):
     """依 source 字串取值，統一回傳 (value, as_of, error)。"""
     try:
