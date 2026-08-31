@@ -1,0 +1,47 @@
+name: 每日預警對照表
+
+on:
+  schedule:
+    # 13:30 UTC = 台北 21:30。台股盤後資料已出，美國前一日 FRED 資料也已更新。
+    - cron: "30 13 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crisis-monitor
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 安裝套件
+        run: pip install -r requirements.txt
+
+      - name: 產出報表
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python monitor.py
+
+      - name: 提交結果
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ docs/ report.md
+          if git diff --staged --quiet; then
+            echo "無變更，略過提交"
+          else
+            git commit -m "報表更新 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
+            git push
+          fi

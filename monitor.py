@@ -179,8 +179,40 @@ def build_telegram(results, summary, changed, stale, errors, stamp, link=None):
     return "\n".join(lines)
 
 
+def debug_finmind():
+    """印出三個 FinMind 資料集的實際欄位與範例列，用來核對欄位名稱。
+
+    用法：python monitor.py --debug-finmind
+    """
+    datasets = [("TaiwanStockTotalInstitutionalInvestors", ""),
+                ("TaiwanFuturesInstitutionalInvestors", "TX"),
+                ("TaiwanStockTotalMarginPurchaseShortSale", ""),
+                # 尚未接上，先確認欄位結構再決定怎麼取分數
+                ("TaiwanBusinessIndicator", "")]
+    for name, data_id in datasets:
+        print(f"\n=== {name}{' / ' + data_id if data_id else ''} ===")
+        try:
+            data = sources.fetch_finmind(name, data_id, days=400 if
+                                         name == "TaiwanBusinessIndicator" else 10)
+        except Exception as exc:  # noqa: BLE001
+            print("  取得失敗：" + sources.safe_error(exc))
+            continue
+        if not data:
+            print("  回傳空資料")
+            continue
+        print(f"  筆數：{len(data)}")
+        print(f"  欄位：{sorted(data[0])}")
+        print(f"  最後一列：{data[-1]}")
+        for key in ("name", "institutional_investor"):
+            if key in data[0]:
+                print(f"  {key} 的所有值：{sorted({str(r.get(key)) for r in data})}")
+
+
 # ------------------------------------------------------------------ 主流程
 def main():
+    if "--debug-finmind" in sys.argv:
+        debug_finmind()
+        return
     dry = "--dry-run" in sys.argv
     now = datetime.now(TPE)
     stamp = now.strftime("%Y-%m-%d %H:%M") + " (台北)"
