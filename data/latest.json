@@ -1,20 +1,20 @@
 {
  "deltas": {
-  "hyoas": 0.42,
-  "y10y3m": 0.4
+  "hyoas": 0.54,
+  "y10y3m": 0.38
  },
  "layers": {
   "credit": 12,
   "liquidity": 10,
-  "structure": 25,
-  "taiwan": 17
+  "structure": 12,
+  "taiwan": 25
  },
  "score": 16,
  "states": {
   "bizsig": "safe",
   "cshiller": "warn",
   "exports": "safe",
-  "fininet": "safe",
+  "fininet": "warn",
   "hygspy": "warn",
   "hyoas": "safe",
   "igoas": "safe",
@@ -29,27 +29,27 @@
   "vix": "safe",
   "xlfdd": "safe",
   "y10y2y": "safe",
-  "y10y3m": "warn"
+  "y10y3m": "safe"
  },
  "values": {
   "bizsig": 41,
-  "cshiller": 2.08,
+  "cshiller": 2.46,
   "exports": 61.9,
-  "fininet": -54.4,
-  "hygspy": -2.97,
-  "hyoas": 3.12,
-  "igoas": 0.84,
-  "margin": 5.12,
+  "fininet": -401.3,
+  "hygspy": -2.19,
+  "hyoas": 3.24,
+  "igoas": 0.86,
+  "margin": 5.24,
   "nahb": 4.16,
-  "sahm": -0.07,
+  "sahm": -0.0,
   "sloos": 0.0,
-  "sofrproxy": -19.0,
-  "twd": 0.58,
-  "txfoi": -79554,
+  "sofrproxy": -13.0,
+  "twd": 0.43,
+  "txfoi": -80304,
   "usdidx": 1.67,
-  "vix": 16.34,
-  "xlfdd": -8.67,
-  "y10y2y": 0.41,
-  "y10y3m": 1.09
+  "vix": 16.39,
+  "xlfdd": -8.27,
+  "y10y2y": 0.46,
+  "y10y3m": 1.07
  }
 }
