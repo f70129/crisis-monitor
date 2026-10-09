@@ -1648,5 +1648,60 @@
    "y10y2y": 0.51,
    "y10y3m": 1.06
   }
+ },
+ "2026-10-10": {
+  "deltas": {
+   "hyoas": 0.44,
+   "y10y3m": 0.27
+  },
+  "layers": {
+   "credit": 12,
+   "liquidity": 30,
+   "structure": 12,
+   "taiwan": 25
+  },
+  "score": 21,
+  "states": {
+   "bizsig": "safe",
+   "cshiller": "warn",
+   "exports": "safe",
+   "fininet": "warn",
+   "hygspy": "danger",
+   "hyoas": "safe",
+   "igoas": "safe",
+   "margin": "safe",
+   "nahb": "safe",
+   "sahm": "safe",
+   "sloos": "warn",
+   "sofrproxy": "safe",
+   "twd": "safe",
+   "txfoi": "danger",
+   "usdidx": "warn",
+   "vix": "safe",
+   "xlfdd": "safe",
+   "y10y2y": "safe",
+   "y10y3m": "safe"
+  },
+  "values": {
+   "bizsig": 41,
+   "cshiller": 2.46,
+   "exports": 61.9,
+   "fininet": -210.4,
+   "hygspy": -3.43,
+   "hyoas": 3.15,
+   "igoas": 0.82,
+   "margin": 3.96,
+   "nahb": 4.16,
+   "sahm": -0.0,
+   "sloos": 0.0,
+   "sofrproxy": -17.0,
+   "twd": 0.91,
+   "txfoi": -83194,
+   "usdidx": 2.76,
+   "vix": 15.41,
+   "xlfdd": -6.16,
+   "y10y2y": 0.47,
+   "y10y3m": 0.99
+  }
  }
 }
