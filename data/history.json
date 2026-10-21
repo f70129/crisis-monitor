@@ -2088,5 +2088,57 @@
    "y10y2y": 0.38,
    "y10y3m": 0.88
   }
+ },
+ "2026-10-22": {
+  "deltas": {},
+  "layers": {
+   "credit": 75,
+   "liquidity": 50,
+   "structure": 0,
+   "taiwan": 42
+  },
+  "score": 47,
+  "states": {
+   "bizsig": "safe",
+   "cshiller": "none",
+   "exports": "safe",
+   "fininet": "danger",
+   "hygspy": "warn",
+   "hyoas": "danger",
+   "igoas": "danger",
+   "margin": "safe",
+   "nahb": "none",
+   "sahm": "none",
+   "sloos": "danger",
+   "sofrproxy": "safe",
+   "twd": "warn",
+   "txfoi": "danger",
+   "usdidx": "none",
+   "vix": "danger",
+   "xlfdd": "safe",
+   "y10y2y": "safe",
+   "y10y3m": "safe"
+  },
+  "values": {
+   "bizsig": 41,
+   "cshiller": null,
+   "exports": 61.9,
+   "fininet": -5027.5,
+   "hygspy": -1.75,
+   "hyoas": 400.0,
+   "igoas": 400.0,
+   "margin": 3.8,
+   "nahb": null,
+   "sahm": null,
+   "sloos": 400.0,
+   "sofrproxy": 0.0,
+   "twd": 2.26,
+   "txfoi": -86072,
+   "usdidx": null,
+   "vix": 400.0,
+   "xlfdd": -4.02,
+   "y10y2y": 400.0,
+   "y10y3m": 400.0
+  }
  }
 }
