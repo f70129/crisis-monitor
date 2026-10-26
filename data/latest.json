@@ -1,7 +1,7 @@
 {
  "deltas": {
-  "hyoas": 0.56,
-  "y10y3m": 0.03
+  "hyoas": 0.53,
+  "y10y3m": -0.06
  },
  "layers": {
   "credit": 12,
@@ -36,20 +36,20 @@
   "cshiller": 2.46,
   "exports": 61.9,
   "fininet": -2817.7,
-  "hygspy": 0.71,
-  "hyoas": 3.4,
-  "igoas": 0.89,
+  "hygspy": 0.0,
+  "hyoas": 3.38,
+  "igoas": 0.91,
   "margin": 2.94,
   "nahb": -3.05,
   "sahm": -0.0,
   "sloos": 0.0,
-  "sofrproxy": -19.0,
-  "twd": 2.42,
+  "sofrproxy": -14.0,
+  "twd": 2.41,
   "txfoi": -87297,
   "usdidx": 1.72,
-  "vix": 19.03,
-  "xlfdd": -4.14,
+  "vix": 19.45,
+  "xlfdd": -3.95,
   "y10y2y": 0.31,
-  "y10y3m": 0.74
+  "y10y3m": 0.78
  }
 }
